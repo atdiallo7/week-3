@@ -18,8 +18,8 @@ def fibonacci(n):
 
 def to_binary(n):
     if n < 2:
-        return n
-    return int(str(to_binary(n // 2)) + str(n % 2))
+        return str(n)
+    return to_binary(n // 2) + str(n % 2)
 
 
 ## Exercise 3
@@ -35,10 +35,11 @@ def task_1():
     df = df_bellevue.copy()
 
     print(
-        "Data issue: 'gender' contains typo values 'g'/'h' (mapped to 'w') "
-        "and '?' entries (treated as missing) before computing missing counts."
+        "Data issue: 'gender' should only contain 'm' or 'w', but also has "
+        "invalid entries ('?', 'g', 'h'). Treating those as missing before "
+        "computing missing counts."
     )
-    df['gender'] = df['gender'].replace({'g': 'w', 'h': 'w', '?': None})
+    df.loc[~df['gender'].isin(['m', 'w']), 'gender'] = None
 
     missing_counts = df.isna().sum().sort_values(kind='stable')
     return missing_counts.index.tolist()
@@ -64,11 +65,11 @@ def task_3():
     df = df_bellevue.copy()
 
     print(
-        "Data issue: 'gender' contains typo values 'g'/'h' (mapped to 'w') "
-        "and '?' entries (treated as missing/excluded) before averaging age. "
-        "Rows with a missing 'age' are also excluded automatically."
+        "Data issue: 'gender' should only contain 'm' or 'w', but also has "
+        "invalid entries ('?', 'g', 'h'). Excluding those before averaging "
+        "age. Rows with a missing 'age' are also excluded automatically."
     )
-    df['gender'] = df['gender'].replace({'g': 'w', 'h': 'w', '?': None})
+    df.loc[~df['gender'].isin(['m', 'w']), 'gender'] = None
 
     return df.groupby('gender')['age'].mean()
 
